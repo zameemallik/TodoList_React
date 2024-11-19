@@ -11,6 +11,7 @@ interface Props {
 const TodoItem: React.FC<Props> = ({ todo, updateTodo, deleteTodo }: Props) => {
   const [isReadOnly, setIsReadOnly] = useState(true);
   const [newTodo, setNewTodo] = useState<Todo>({ ...todo });
+  const [statusHasChanged, setStatusHasChanged] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -36,6 +37,7 @@ const TodoItem: React.FC<Props> = ({ todo, updateTodo, deleteTodo }: Props) => {
   const handleChangeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedStatus = e.target.value as keyof typeof Status;
     setNewTodo({ ...newTodo, status: Status[selectedStatus] });
+    setStatusHasChanged(true);
   };
 
   const handleUpdate = () => {
@@ -54,6 +56,11 @@ const TodoItem: React.FC<Props> = ({ todo, updateTodo, deleteTodo }: Props) => {
   useEffect(() => {
     setNewTodo({ ...todo });
   }, [todo]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setStatusHasChanged(false), 1000); // 1秒後に戻す
+    return () => clearTimeout(timer); // クリーンアップ
+  }, [newTodo.status]);
 
   return (
     <>
@@ -110,7 +117,7 @@ const TodoItem: React.FC<Props> = ({ todo, updateTodo, deleteTodo }: Props) => {
             name="status"
             value={Status[newTodo.status]}
             onChange={handleChangeStatus}
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none cursor-pointer"
+            className={`w-full p-2 border border-gray-300 rounded focus:outline-none cursor-pointer ${statusHasChanged ? 'bg-red-400' : ''}`}
           >
             {Object.keys(Status)
               .filter((key) => isNaN(Number(key)))
