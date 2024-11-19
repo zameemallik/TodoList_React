@@ -17,7 +17,7 @@ const TodoForm: React.FC<Props> = ({ addTodo }: Props) => {
   const [detail, setDetail] = useState('');
   const [status, setStatus] = useState<Status>(Status.未着手);
   const [deadline, setDeadLine] = useState<Date>(new Date());
-  const [importance, setImportance] = useState<Importance>(Importance.底);
+  const [importance, setImportance] = useState<Importance>(Importance.低);
 
   const handleSubmit = () => {
     console.log('現在の重要度');
